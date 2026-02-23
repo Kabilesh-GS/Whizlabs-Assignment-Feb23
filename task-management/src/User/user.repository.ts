@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/Prisma/prisma.service";
 import { userDto } from "./DTO/user.dto";
 import * as bcrypt from 'bcrypt';
+import { emailQueue } from "src/Redis/emailQueue";
 
 @Injectable()
 
@@ -27,6 +28,11 @@ export class userRepo{
           }
         }
       })
+
+      await emailQueue.add("sendEmail", {
+        email: user.email,
+        name: user.name,
+      });
 
       return {"message" : "user Created Successfully" , userData}
     }
