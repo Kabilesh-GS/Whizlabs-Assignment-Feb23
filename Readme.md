@@ -24,6 +24,8 @@ This repository contains the Whizlabs training assignment for February 2023.
 - run the command ```npx prisma generate```
 - run the application using ```npm run start```
 - run the seed command to add roles and admin users ```npx prisma db seed```
+- ```brew services start redis ``` to start the redis server
+- ```npx ts-node src/worker.ts``` to start the bullMQ worker
 
 ## Usage
 - */v1/adduser* is to register
@@ -32,3 +34,7 @@ This repository contains the Whizlabs training assignment for February 2023.
 - */v1/getTasks* is to get all the task data, only accessible by the admin
 - */v1/getUserTasks* is to view taks only by th particular user
 - */v1/deleteTasks* is to delete the task, can be done only by the admin.
+
+### To run test 
+- ```npm run test``` for unit testing 
+- ```npm rnu test:e2e``` for integration testing
