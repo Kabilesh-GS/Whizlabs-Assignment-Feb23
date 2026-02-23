@@ -18,4 +18,8 @@ export class authService{
   async viewTask(userID : number){
     return await this.authR.viewTask(userID);
   }
+
+  async deleteTask(taskID : number){
+    return await this.authR.deleteTask(taskID);
+  }
 }

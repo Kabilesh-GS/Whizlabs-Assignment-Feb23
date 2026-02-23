@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Req } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { prismaService } from "src/Prisma/prisma.service";
 import { loginDto } from "./DTO/login.dto";
 import { JwtService } from "@nestjs/jwt";
@@ -87,5 +87,27 @@ export class authRepo{
     })
 
     return tasksAddition;
+  }
+
+  async deleteTask(taskID : number){
+    const task = await this.prisma.task.findUnique({
+      where : {
+        id : taskID
+      }
+    })
+
+    if(!task){
+      throw new BadRequestException("Task not found");
+    }
+
+    await this.prisma.task.delete({
+      where : {
+        id : taskID
+      }
+    })
+
+    const allTask = await this.prisma.task.findMany({});
+
+    return { message : "Task deleted successfully", allTasks : allTask }
   }
 }

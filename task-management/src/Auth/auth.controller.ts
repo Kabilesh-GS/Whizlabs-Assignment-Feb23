@@ -1,4 +1,4 @@
-import { Controller,Post,Body, Req,UseGuards, Get } from "@nestjs/common";
+import { Controller,Post,Body, Req,UseGuards, Get, Param, Delete } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { authService } from "./auth.service";
 import { loginDto } from "./DTO/login.dto";
@@ -53,5 +53,14 @@ export class authController{
   async viewTask(@Req() req : GetUserId){
     const userID = req.user['id']
     return await this.authSer.viewTask(userID); 
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Role('admin')
+  @Delete('deleteTask/:id')
+  async deleteTask(@Param("id") taskID : number){
+    console.log(taskID);
+    return await this.authSer.deleteTask(Number(taskID)); 
   }
 }
