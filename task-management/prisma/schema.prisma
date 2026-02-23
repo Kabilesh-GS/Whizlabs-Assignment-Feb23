@@ -19,7 +19,7 @@ model User {
   email String @unique()
   password String
   userRole  UserRoles[]
-  tasks Task[]
+  task Task[]
   refreshtoken String?
 }
 

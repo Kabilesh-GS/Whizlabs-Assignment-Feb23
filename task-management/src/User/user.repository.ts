@@ -31,7 +31,7 @@ export class userRepo{
       return {"message" : "user Created Successfully" , userData}
     }
     catch(err){
-      return { err : err.meta.driverAdapterError.cause.originalMessage }
+      return { err : err }
     }
   }
 }

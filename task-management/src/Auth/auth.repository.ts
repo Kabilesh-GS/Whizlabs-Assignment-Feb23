@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, Req } from "@nestjs/common";
 import { prismaService } from "src/Prisma/prisma.service";
 import { loginDto } from "./DTO/login.dto";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcrypt';
+import { taskDto } from "./DTO/task.dto";
 
 @Injectable()
 
@@ -62,5 +63,29 @@ export class authRepo{
     })
 
     return {accesstoken, refreshtoken, name : user.name, email : user.email}
+  }
+
+  async addtask(task : taskDto, userID : number){
+    const tasksAddition = await this.prisma.task.create({
+      data : {
+        title : task.title,
+        description : task.description,
+        ownerID : userID
+      }
+    })
+
+    return tasksAddition;
+  }
+
+  async viewTask(userID : number){
+    const tasksAddition = await this.prisma.task.findMany({
+      where : {
+        user : {
+          id : userID
+        }
+      }
+    })
+
+    return tasksAddition;
   }
 }
