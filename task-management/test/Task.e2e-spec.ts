@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, VersioningType } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
@@ -52,6 +52,10 @@ describe('Full App Integratn (e2e', () => {
       .compile();
 
     app = moduleFixture.createNestApplication();
+    app.enableVersioning({
+      type: VersioningType.URI,
+      prefix: 'v',
+    });
     await app.init();
   });
 
@@ -64,7 +68,10 @@ describe('Full App Integratn (e2e', () => {
   });
 
   it('GET / should return Hello World', async () => {
-    await request(app.getHttpServer()).get('/').expect(200).expect('Hello World!');
+    await request(app.getHttpServer())
+      .get('/v1/')
+      .expect(200)
+      .expect('Hello World!');
   });
 
   it('POST /adduser should create a user', async () => {
@@ -78,7 +85,7 @@ describe('Full App Integratn (e2e', () => {
     mockUserRepo.addUser.mockResolvedValue(expected);
 
     await request(app.getHttpServer())
-      .post('/adduser')
+      .post('/v1/adduser')
       .send(payload)
       .expect(201)
       .expect(expected);
@@ -87,7 +94,10 @@ describe('Full App Integratn (e2e', () => {
   });
 
   it('POST /login should return auth tokens', async () => {
-    const payload = { email: 'example@anymail.com', password: 'StringPassword' };
+    const payload = {
+      email: 'example@anymail.com',
+      password: 'StringPassword',
+    };
     const expected = {
       accesstoken: 'access-token',
       refreshtoken: 'refresh-token',
@@ -98,7 +108,7 @@ describe('Full App Integratn (e2e', () => {
     mockAuthRepo.loginUser.mockResolvedValue(expected);
 
     await request(app.getHttpServer())
-      .post('/login')
+      .post('/v1/login')
       .send(payload)
       .expect(201)
       .expect(expected);
@@ -107,13 +117,16 @@ describe('Full App Integratn (e2e', () => {
   });
 
   it('POST /addTask should create a task for authenticated user', async () => {
-    const payload = { title: 'Write tests', description: 'Create integration tests' };
+    const payload = {
+      title: 'Write tests',
+      description: 'Create integration tests',
+    };
     const expected = { id: 10, ...payload, ownerID: 1 };
 
     mockAuthRepo.addtask.mockResolvedValue(expected);
 
     await request(app.getHttpServer())
-      .post('/addTask')
+      .post('/v1/addTask')
       .set('Authorization', 'Bearer token')
       .send(payload)
       .expect(201)
@@ -136,7 +149,7 @@ describe('Full App Integratn (e2e', () => {
     mockPrismaService.task.findMany.mockResolvedValue(expected);
 
     await request(app.getHttpServer())
-      .get('/getTasks')
+      .get('/v1/getTasks')
       .set('Authorization', 'Bearer token')
       .expect(200)
       .expect(expected);
@@ -147,12 +160,14 @@ describe('Full App Integratn (e2e', () => {
   });
 
   it('GET /getUserTasks should return authenticated user tasks', async () => {
-    const expected = [{ id: 1, title: 'Task 1', description: 'Desc', ownerID: 1 }];
+    const expected = [
+      { id: 1, title: 'Task 1', description: 'Desc', ownerID: 1 },
+    ];
 
     mockAuthRepo.viewTask.mockResolvedValue(expected);
 
     await request(app.getHttpServer())
-      .get('/getUserTasks')
+      .get('/v1/getUserTasks')
       .set('Authorization', 'Bearer token')
       .expect(200)
       .expect(expected);
@@ -169,7 +184,7 @@ describe('Full App Integratn (e2e', () => {
     mockAuthRepo.deleteTask.mockResolvedValue(expected);
 
     await request(app.getHttpServer())
-      .delete('/deleteTask/1')
+      .delete('/v1/deleteTask/1')
       .set('Authorization', 'Bearer token')
       .expect(200)
       .expect(expected);

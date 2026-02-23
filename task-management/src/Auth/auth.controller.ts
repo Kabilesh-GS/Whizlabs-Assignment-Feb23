@@ -1,4 +1,4 @@
-import { Controller,Post,Body, Req,UseGuards, Get, Param, Delete } from "@nestjs/common";
+import { Controller,Post,Body, Req,UseGuards, Get, Param, Delete, Version} from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { authService } from "./auth.service";
 import { loginDto } from "./DTO/login.dto";
@@ -20,11 +20,13 @@ export interface GetUserId extends Request {
 export class authController{
   constructor(private authSer : authService, private prisma : prismaService){}
 
+  @Version('1')
   @Post('login')
   async loginUser(@Body() login : loginDto){
     return await this.authSer.loginUser(login);
   }
 
+  @Version('1')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Role('user')
@@ -34,6 +36,7 @@ export class authController{
     return await this.authSer.addTask(task, userID);
   }
 
+  @Version('1')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Role('admin')
@@ -46,6 +49,7 @@ export class authController{
     });
   }
 
+  @Version('1')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Role('user')
@@ -55,6 +59,7 @@ export class authController{
     return await this.authSer.viewTask(userID); 
   }
 
+  @Version('1')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Role('admin')
