@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/Prisma/prisma.service";
 import { userDto } from "./DTO/user.dto";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 
@@ -14,7 +15,7 @@ export class userRepo{
         data : {
           name: user.name,
           email : user.email,
-          password : user.password,
+          password : await bcrypt.hash(user.password,10),
           userRole : {
             create : {
               role : {

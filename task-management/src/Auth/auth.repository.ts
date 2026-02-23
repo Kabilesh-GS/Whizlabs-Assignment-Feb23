@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { prismaService } from "src/Prisma/prisma.service";
 import { loginDto } from "./DTO/login.dto";
 import { JwtService } from "@nestjs/jwt";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 
@@ -25,6 +26,9 @@ export class authRepo{
     console.log(user);
     if(!user){
       throw new BadRequestException("No such User")
+    }
+    if(!(await bcrypt.compareSync(login.password,user.password))){
+      throw new BadRequestException("Wrong Password")
     }
 
     const role = user.userRole.map((u) => {

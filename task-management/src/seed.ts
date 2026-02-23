@@ -2,6 +2,7 @@ import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import * as bcrypt from 'bcrypt';
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -24,7 +25,7 @@ async function main(){
     data : {
       name : "Admin",
       email : "admin@email.com",
-      password : "Admin123!",
+      password : await bcrypt.hash("AdminPass!123",10),
       userRole : {
         create : {
           role : {
