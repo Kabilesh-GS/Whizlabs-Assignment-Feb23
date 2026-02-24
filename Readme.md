@@ -24,6 +24,7 @@ This repository contains the Whizlabs training assignment for February 2023.
 - run the command ```npx prisma generate```
 - run the application using ```npm run start```
 - run the seed command to add roles and admin users ```npx prisma db seed```
+- open another terminal and run
 - ```brew services start redis ``` to start the redis server
 - ```npx ts-node src/worker.ts``` to start the bullMQ worker
 
@@ -37,4 +38,4 @@ This repository contains the Whizlabs training assignment for February 2023.
 
 ### To run test 
 - ```npm run test``` for unit testing 
-- ```npm rnu test:e2e``` for integration testing
+- ```npm run test:e2e``` for integration testing
